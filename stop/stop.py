@@ -36,7 +36,7 @@ def find_positions(sequence, offset):
         stop_positions = one_stop_mutations(sequence[i:i + 3])
 
         for position in stop_positions:
-            result.append(i + position)
+            result.append(i + position + 1)
 
     return result
 
@@ -46,7 +46,8 @@ def stop(input_handle, output_handle, offset):
     """
     sequence = str(SeqIO.parse(input_handle, 'fasta').next().seq)
 
-    output_handle.write('\n'.join(map(str, find_positions(sequence, offset))))
+    for i in find_positions(sequence, offset):
+        output_handle.write('{}\n'.format(i))
 
 
 def main():
@@ -66,7 +67,7 @@ def main():
     except IOError as error:
         parser.error(error)
 
-    stop(args.input_handle, args.output_handle, args.offset)
+    stop(args.input_handle, args.output_handle, args.offset - 1)
 
 
 if __name__ == '__main__':
