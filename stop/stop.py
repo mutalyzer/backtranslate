@@ -8,6 +8,7 @@ Almost stop codon finder.
 """
 
 import argparse
+from collections import defaultdict
 
 import Levenshtein
 from Bio import SeqIO
@@ -17,13 +18,13 @@ from Bio.Data import CodonTable
 def one_stop_mutations(codon):
     """
     """
-    positions = set()
+    positions = defaultdict(list)
 
     for stop_codon in CodonTable.unambiguous_dna_by_id[1].stop_codons:
         if Levenshtein.hamming(codon, stop_codon) == 1:
             for i in range(3):
                 if codon[i] != stop_codon[i]:
-                    positions.add(i)
+                    positions[i].append(stop_codon[i])
     return positions
 
 
@@ -36,7 +37,7 @@ def find_positions(sequence, offset):
         stop_positions = one_stop_mutations(sequence[i:i + 3])
 
         for position in stop_positions:
-            result.append(i + position + 1)
+            result.append((i + position + 1, stop_positions[position]))
 
     return result
 
@@ -59,7 +60,7 @@ def main():
         help='input file in FASTA format')
     parser.add_argument('output_handle', type=argparse.FileType('w'),
         help='output file')
-    parser.add_argument('-o', dest='offset', type=int, default=0,
+    parser.add_argument('-o', dest='offset', type=int, default=1,
         help='offset in the reference sequence (int default=%(default)s)')
 
     try:
