@@ -8,33 +8,20 @@ Almost stop codon finder.
 """
 
 import argparse
-from collections import defaultdict
 
-import Levenshtein
 from Bio import SeqIO
-from Bio.Data import CodonTable
 
-
-def one_stop_mutations(codon):
-    """
-    """
-    positions = defaultdict(list)
-
-    for stop_codon in CodonTable.unambiguous_dna_by_id[1].stop_codons:
-        if Levenshtein.hamming(codon, stop_codon) == 1:
-            for i in range(3):
-                if codon[i] != stop_codon[i]:
-                    positions[i].append(stop_codon[i])
-    return positions
+from .backtranslate import one_subst, reverse_translation_table
 
 
 def find_positions(sequence, offset):
     """
     """
+    back_table = reverse_translation_table(1)
     result = []
 
     for i in range(offset, len(sequence) - ((len(sequence) - offset) % 3), 3):
-        stop_positions = one_stop_mutations(sequence[i:i + 3])
+        stop_positions = one_subst(back_table, sequence[i:i + 3], '*')
 
         for position in stop_positions:
             result.append((i + position + 1, stop_positions[position]))

@@ -87,25 +87,3 @@ def subst_to_var(reference_codon, substitutions, offset=1):
                 inserted=ISeqList([ISeq(sequence=substitution)]))]))
 
     return variants
-
-
-def backtranslate(table_id=1):
-    """
-    """
-    back_table = reverse_translation_table(table_id)
-
-    a = one_subst(back_table, 'TGG', '*')
-    print map(str, subst_to_var('TGG', a))
-
-    b = one_subst(back_table, 'TAC', '*')
-    print map(str, subst_to_var('TAC', b))
-
-
-def main():
-    """
-    """
-    backtranslate()
-
-
-if __name__ == '__main__':
-    main()
