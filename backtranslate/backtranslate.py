@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-
-"""
-"""
-
-
 from collections import defaultdict
 
 from Bio.Data import CodonTable, IUPACData

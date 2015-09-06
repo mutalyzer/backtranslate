@@ -17,10 +17,13 @@ __author__ = 'LUMC, Jeroen F.J. Laros'
 __contact__ = 'J.F.J.Laros@lumc.nl'
 __homepage__ = 'https://github.com/mutalyzer/backtranslate'
 
+
 usage = __doc__.split("\n\n\n")
+
 
 def docSplit(func):
     return func.__doc__.split("\n\n")[0]
+
 
 def version(name):
     return "%s version %s\n\nAuthor   : %s <%s>\nHomepage : %s" % (name,
