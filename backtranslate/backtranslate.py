@@ -58,6 +58,29 @@ def one_subst(back_table, reference_codon, amino_acid):
     return substitutions
 
 
+def one_subst_without_dna(back_table, reference_amino_acid, amino_acid):
+    """
+    Find single nucleotide substitutions that given a reference amino acid
+    explains an observed amino acid.
+
+    :arg dict back_table: Reverse translation table.
+    :arg str reference_amino_acid: Original amino acid.
+    :arg str amino_acid: Observed amino acid.
+
+    :returns dict: Set of single nucleotide substitutions indexed by position.
+    """
+    substitutions = defaultdict(set)
+
+    for codon in back_table[amino_acid]:
+        for reference_codon in back_table[reference_amino_acid]:
+            if hamming(codon, reference_codon) == 1:
+                for position in range(3):
+                    if codon[position] != reference_codon[position]:
+                        substitutions[position].add(codon[position])
+
+    return substitutions
+
+
 def subst_to_var(reference_codon, substitutions, offset=0):
     """
     Translate a set of substitutions to HGVS.
