@@ -30,6 +30,7 @@ setup(
     entry_points = {
         'console_scripts': [
             'find_stops = backtranslate.find_stops:main',
+            'back_translate = backtranslate.cli:main'
         ]
     },
     classifiers = [

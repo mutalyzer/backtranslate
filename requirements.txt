@@ -1,3 +1,4 @@
 python-Levenshtein
 biopython
 git+git://github.com/mutalyzer/description-extractor.git
+suds
