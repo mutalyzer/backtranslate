@@ -29,7 +29,7 @@ def find_positions(sequence, offset):
     return result
 
 
-def stop(input_handle, output_handle, offset):
+def find_stops(input_handle, output_handle, offset):
     """
     """
     sequence = str(SeqIO.parse(input_handle, 'fasta').next().seq)
@@ -55,7 +55,7 @@ def main():
     except IOError as error:
         parser.error(error)
 
-    stop(args.input_handle, args.output_handle, args.offset - 1)
+    find_stops(args.input_handle, args.output_handle, args.offset - 1)
 
 
 if __name__ == '__main__':
