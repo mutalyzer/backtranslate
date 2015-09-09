@@ -17,6 +17,19 @@ def _three_to_one():
     return protein_letters_3to1
 
 
+def _compare_dict(d1, d2):
+    """
+    """
+    if len(d1) != len(d2):
+        return False
+
+    for item in d1:
+        if d1[item] != d2[item]:
+            return False
+
+    return True
+
+
 def reverse_translation_table(table_id=1):
     """
     Calculate a reverse translation table.
@@ -106,6 +119,33 @@ def subst_to_var(reference_codon, substitutions, offset=0):
                 inserted=ISeqList([ISeq(sequence=substitution)]))]))
 
     return variants
+
+
+def improvable_substitutions(back_table):
+    """
+    Calculate all pairs of amino acid substututions that can be improved by
+    looking at the underlying codon.
+
+    :arg dict back_table: Reverse translation table.
+
+    :returns list: List of improvable substitutions.
+    """
+    substitutions = set()
+
+    for reference_amino_acid in back_table:
+        for sample_amino_acid in back_table:
+            substitutions_without_dna = one_subst_without_dna(
+                back_table, reference_amino_acid, sample_amino_acid)
+            for codon in back_table[reference_amino_acid]:
+                substitutions_with_dna = one_subst(
+                    back_table, codon, sample_amino_acid)
+                if (substitutions_with_dna and not _compare_dict(
+                        substitutions_without_dna, substitutions_with_dna) and
+                        reference_amino_acid != sample_amino_acid):
+                    substitutions.add(
+                        (reference_amino_acid, sample_amino_acid))
+
+    return substitutions
 
 
 protein_letters_3to1 = _three_to_one()

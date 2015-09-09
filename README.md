@@ -3,12 +3,34 @@ This library provides functions for back translation from amino acids to
 nucleotides.
 
     from backtranslate.backtranslate import (
-        reverse_translation_table, one_subst, subst_to_var)
+        reverse_translation_table, one_subst)
 
     # First create the reverse translation table for the organism of interest.
     back_table = reverse_translation_table(1)
     # Find all substitutions that transform the codon 'TTG' into a stop codon.
     substitutions = one_subst(back_table, 'TGG', '*')
+
+
+Sometimes we do not have access to the DNA sequence so we have to find
+possible substitutions from the amino acids directly.
+
+    from backtranslate.backtranslate import (
+        reverse_translation_table, one_subst_without_dna)
+
+    # Find all substitutions that transform a Tryptophan into a stop codon.
+    substitutions = one_subst_without_dna(back_table, 'W', '*')
+
+To find out which substitution predictions can be improved by adding codon
+information, use the following function.
+
+    from backtranslate.backtranslate import improvable_substitutions
+
+    improvable_substitutions(back_table)
+
+To get substitutions in a readable format, we can use the following:
+
+    from backtranslate.backtranslate import subst_to_var
+
     # Transform the substitutions to HGVS.
     variants = subst_to_var('TGG', substitutions, 12)
     # Print the variants in human readable format.
