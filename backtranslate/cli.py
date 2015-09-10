@@ -7,7 +7,7 @@ from suds.client import Client
 from . import usage, version, doc_split
 from .backtranslate import (
     reverse_translation_table, protein_letters_3to1, one_subst,
-    one_subst_without_dna, subst_to_hgvs)
+    one_subst_without_dna, subst_to_hgvs, improvable_substitutions)
 
 
 URL = 'https://mutalyzer.nl/services/?wsdl'
@@ -37,8 +37,7 @@ def with_dna(reference, position, amino_acid):
     return subst_to_hgvs(substitutions, offset)
 
 
-def without_dna(
-        reference, position, reference_amino_acid, amino_acid):
+def without_dna(reference, position, reference_amino_acid, amino_acid):
     """
     Get all variants that result in the observed amino acid change without
     making use of the transcript.
@@ -51,9 +50,15 @@ def without_dna(
     :returns set: Variants that lead to the observed amino acid change.
     """
     back_table = reverse_translation_table()
+    improvable = improvable_substitutions(back_table)
+
     substitutions = one_subst_without_dna(
         back_table, protein_letters_3to1[reference_amino_acid],
         protein_letters_3to1[amino_acid])
+
+    if (protein_letters_3to1[reference_amino_acid],
+            protein_letters_3to1[amino_acid]) in improvable:
+        print 'This substitution can be improved by using `with dna`.'
 
     return subst_to_hgvs(substitutions, (position - 1) * 3)
 
