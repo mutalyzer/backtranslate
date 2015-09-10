@@ -44,7 +44,7 @@ the transcript variant:
 If no reference is available, use the `without_dna` subcommand:
 
     $ back_translate without_dna NM_003002.2 66 Trp Ter
-    ['NM_003002.2:c.206G>A', 'NM_003002.2:c.207G>A']
+    ['NM_003002.2:c.197G>A', 'NM_003002.2:c.198G>A']
 
 
 ## Potential stop codon finder
