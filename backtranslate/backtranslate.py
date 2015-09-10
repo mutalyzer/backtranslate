@@ -66,7 +66,8 @@ def one_subst(back_table, reference_codon, amino_acid):
         if hamming(codon, reference_codon) == 1:
             for position in range(3):
                 if codon[position] != reference_codon[position]:
-                    substitutions[position].add(codon[position])
+                    substitutions[position].add(
+                        (reference_codon[position], codon[position]))
 
     return substitutions
 
@@ -89,16 +90,16 @@ def one_subst_without_dna(back_table, reference_amino_acid, amino_acid):
             if hamming(codon, reference_codon) == 1:
                 for position in range(3):
                     if codon[position] != reference_codon[position]:
-                        substitutions[position].add(codon[position])
+                        substitutions[position].add(
+                            (reference_codon[position], codon[position]))
 
     return substitutions
 
 
-def subst_to_var(reference_codon, substitutions, offset=0):
+def subst_to_hgvs(substitutions, offset=0):
     """
     Translate a set of substitutions to HGVS.
 
-    :arg str reference_codon: Original codon.
     :arg dict substitutions: Set of single nucleotide substitutions indexed by
         position.
     :arg int offset: Codon position in the CDS.
@@ -115,8 +116,8 @@ def subst_to_var(reference_codon, substitutions, offset=0):
                 sample_start=position + offset + 1,
                 sample_end=position + offset + 1,
                 type='subst',
-                deleted=ISeqList([ISeq(sequence=reference_codon[position])]),
-                inserted=ISeqList([ISeq(sequence=substitution)]))]))
+                deleted=ISeqList([ISeq(sequence=substitution[0])]),
+                inserted=ISeqList([ISeq(sequence=substitution[1])]))]))
 
     return variants
 

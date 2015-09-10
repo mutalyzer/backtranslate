@@ -9,7 +9,7 @@ Licensed under the MIT license, see the LICENSE file.
 """
 
 
-__version_info__ = ('0', '0', '1')
+__version_info__ = ('0', '0', '2')
 
 
 __version__ = '.'.join(__version_info__)
@@ -21,7 +21,7 @@ __homepage__ = 'https://github.com/mutalyzer/backtranslate'
 usage = __doc__.split("\n\n\n")
 
 
-def docSplit(func):
+def doc_split(func):
     return func.__doc__.split("\n\n")[0]
 
 
