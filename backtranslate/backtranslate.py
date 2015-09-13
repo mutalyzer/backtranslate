@@ -30,6 +30,26 @@ def _compare_dict(d1, d2):
     return True
 
 
+def _one_subst(substitutions, back_table, reference_codon, amino_acid):
+    """
+    Find single nucleotide substitutions that given a reference codon explains
+    an observed amino acid.
+
+    :arg dictsubstitutions: Set of single nucleotide substitutions indexed by
+        position.
+    :arg dict back_table: Reverse translation table.
+    :arg str reference_codon: Original codon.
+    :arg str amino_acid: Observed amino acid.
+
+    """
+    for codon in back_table[amino_acid]:
+        if hamming(codon, reference_codon) == 1:
+            for position in range(3):
+                if codon[position] != reference_codon[position]:
+                    substitutions[position].add(
+                        (reference_codon[position], codon[position]))
+
+
 def reverse_translation_table(table_id=1):
     """
     Calculate a reverse translation table.
@@ -62,12 +82,7 @@ def one_subst(back_table, reference_codon, amino_acid):
     """
     substitutions = defaultdict(set)
 
-    for codon in back_table[amino_acid]:
-        if hamming(codon, reference_codon) == 1:
-            for position in range(3):
-                if codon[position] != reference_codon[position]:
-                    substitutions[position].add(
-                        (reference_codon[position], codon[position]))
+    _one_subst(substitutions, back_table, reference_codon, amino_acid)
 
     return substitutions
 
@@ -85,13 +100,8 @@ def one_subst_without_dna(back_table, reference_amino_acid, amino_acid):
     """
     substitutions = defaultdict(set)
 
-    for codon in back_table[amino_acid]:
-        for reference_codon in back_table[reference_amino_acid]:
-            if hamming(codon, reference_codon) == 1:
-                for position in range(3):
-                    if codon[position] != reference_codon[position]:
-                        substitutions[position].add(
-                            (reference_codon[position], codon[position]))
+    for reference_codon in back_table[reference_amino_acid]:
+        _one_subst(substitutions, back_table, reference_codon, amino_acid)
 
     return substitutions
 
