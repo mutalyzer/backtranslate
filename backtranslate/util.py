@@ -40,4 +40,5 @@ def subst_to_hgvs(substitutions, offset=0):
     return variants
 
 
+protein_letters = IUPACData.protein_letters + '*'
 protein_letters_3to1 = _three_to_one()
