@@ -1,53 +1,26 @@
 from collections import defaultdict
 
-from Bio.Data import CodonTable, IUPACData
-from extractor.variant import Allele, DNAVar, ISeq, ISeqList
+from Bio.Data import CodonTable
 from Levenshtein import hamming
 
 
-def _three_to_one():
+def cmp_subst(subst_1, subst_2):
     """
-    The three letter to one letter table for amino acids including stop.
+    Compare two substitution sets.
 
-    :returns dict: Three letter to one letter amino acids table.
+    :arg dict subst_1: Substitution set.
+    :arg dict subst_2: Substitution set.
+
+    :returns bool: True if `subst_1` equals `subst2`, False otherwise.
     """
-    protein_letters_3to1 = dict(IUPACData.protein_letters_3to1_extended)
-    protein_letters_3to1.update({'Ter': '*'})
-
-    return protein_letters_3to1
-
-
-def _compare_dict(d1, d2):
-    """
-    """
-    if len(d1) != len(d2):
+    if len(subst_1) != len(subst_2):
         return False
 
-    for item in d1:
-        if d1[item] != d2[item]:
+    for item in subst_1:
+        if subst_1[item] != subst_2[item]:
             return False
 
     return True
-
-
-def _one_subst(substitutions, back_table, reference_codon, amino_acid):
-    """
-    Find single nucleotide substitutions that given a reference codon explains
-    an observed amino acid.
-
-    :arg dictsubstitutions: Set of single nucleotide substitutions indexed by
-        position.
-    :arg dict back_table: Reverse translation table.
-    :arg str reference_codon: Original codon.
-    :arg str amino_acid: Observed amino acid.
-
-    """
-    for codon in back_table[amino_acid]:
-        if hamming(codon, reference_codon) == 1:
-            for position in range(3):
-                if codon[position] != reference_codon[position]:
-                    substitutions[position].add(
-                        (reference_codon[position], codon[position]))
 
 
 def reverse_translation_table(table_id=1):
@@ -69,94 +42,95 @@ def reverse_translation_table(table_id=1):
     return back_table
 
 
-def one_subst(back_table, reference_codon, amino_acid):
+class BackTranslate(object):
     """
-    Find single nucleotide substitutions that given a reference codon explains
-    an observed amino acid.
-
-    :arg dict back_table: Reverse translation table.
-    :arg str reference_codon: Original codon.
-    :arg str amino_acid: Observed amino acid.
-
-    :returns dict: Set of single nucleotide substitutions indexed by position.
+    Back translation.
     """
-    substitutions = defaultdict(set)
+    def __init__(self, table_id=1):
+        """
+        Initialise the class.
 
-    _one_subst(substitutions, back_table, reference_codon, amino_acid)
-
-    return substitutions
-
-
-def one_subst_without_dna(back_table, reference_amino_acid, amino_acid):
-    """
-    Find single nucleotide substitutions that given a reference amino acid
-    explains an observed amino acid.
-
-    :arg dict back_table: Reverse translation table.
-    :arg str reference_amino_acid: Original amino acid.
-    :arg str amino_acid: Observed amino acid.
-
-    :returns dict: Set of single nucleotide substitutions indexed by position.
-    """
-    substitutions = defaultdict(set)
-
-    for reference_codon in back_table[reference_amino_acid]:
-        _one_subst(substitutions, back_table, reference_codon, amino_acid)
-
-    return substitutions
+        :arg int table_id: Translation table id.
+        """
+        self._back_table = reverse_translation_table(table_id)
 
 
-def subst_to_hgvs(substitutions, offset=0):
-    """
-    Translate a set of substitutions to HGVS.
+    def _one_subst(self, substitutions, reference_codon, amino_acid):
+        """
+        Find single nucleotide substitutions that given a reference codon
+        explains an observed amino acid.
 
-    :arg dict substitutions: Set of single nucleotide substitutions indexed by
-        position.
-    :arg int offset: Codon position in the CDS.
-
-    :returns set: Substitutions in HGVS format.
-    """
-    variants = set()
-
-    for position in substitutions:
-        for substitution in substitutions[position]:
-            variants.add(Allele([DNAVar(
-                start=position + offset + 1,
-                end=position + offset + 1,
-                sample_start=position + offset + 1,
-                sample_end=position + offset + 1,
-                type='subst',
-                deleted=ISeqList([ISeq(sequence=substitution[0])]),
-                inserted=ISeqList([ISeq(sequence=substitution[1])]))]))
-
-    return variants
+        :arg dictsubstitutions: Set of single nucleotide substitutions indexed
+            by position.
+        :arg str reference_codon: Original codon.
+        :arg str amino_acid: Observed amino acid.
+        """
+        for codon in self._back_table[amino_acid]:
+            if hamming(codon, reference_codon) == 1:
+                for position in range(3):
+                    if codon[position] != reference_codon[position]:
+                        substitutions[position].add(
+                            (reference_codon[position], codon[position]))
 
 
-def improvable_substitutions(back_table):
-    """
-    Calculate all pairs of amino acid substututions that can be improved by
-    looking at the underlying codon.
+    def with_dna(self, reference_codon, amino_acid):
+        """
+        Find single nucleotide substitutions that given a reference codon
+        explains an observed amino acid.
 
-    :arg dict back_table: Reverse translation table.
+        :arg str reference_codon: Original codon.
+        :arg str amino_acid: Observed amino acid.
 
-    :returns list: List of improvable substitutions.
-    """
-    substitutions = set()
+        :returns dict: Set of single nucleotide substitutions indexed by
+            position.
+        """
+        substitutions = defaultdict(set)
 
-    for reference_amino_acid in back_table:
-        for sample_amino_acid in back_table:
-            substitutions_without_dna = one_subst_without_dna(
-                back_table, reference_amino_acid, sample_amino_acid)
-            for codon in back_table[reference_amino_acid]:
-                substitutions_with_dna = one_subst(
-                    back_table, codon, sample_amino_acid)
-                if (substitutions_with_dna and not _compare_dict(
-                        substitutions_without_dna, substitutions_with_dna) and
-                        reference_amino_acid != sample_amino_acid):
-                    substitutions.add(
-                        (reference_amino_acid, sample_amino_acid))
+        self._one_subst(substitutions, reference_codon, amino_acid)
 
-    return substitutions
+        return substitutions
 
 
-protein_letters_3to1 = _three_to_one()
+    def without_dna(self, reference_amino_acid, amino_acid):
+        """
+        Find single nucleotide substitutions that given a reference amino acid
+        explains an observed amino acid.
+
+        :arg str reference_amino_acid: Original amino acid.
+        :arg str amino_acid: Observed amino acid.
+
+        :returns dict: Set of single nucleotide substitutions indexed by
+            position.
+        """
+        substitutions = defaultdict(set)
+
+        for reference_codon in self._back_table[reference_amino_acid]:
+            self._one_subst(substitutions, reference_codon, amino_acid)
+
+        return substitutions
+
+
+    def improvable(self):
+        """
+        Calculate all pairs of amino acid substututions that can be improved by
+        looking at the underlying codon.
+
+        :returns list: List of improvable substitutions.
+        """
+        substitutions = set()
+
+        for reference_amino_acid in self._back_table:
+            for sample_amino_acid in self._back_table:
+                substitutions_without_dna = self.without_dna(
+                    reference_amino_acid, sample_amino_acid)
+                for codon in self._back_table[reference_amino_acid]:
+                    substitutions_with_dna = self.with_dna(
+                        codon, sample_amino_acid)
+                    if (substitutions_with_dna and not
+                            cmp_subst(substitutions_without_dna,
+                            substitutions_with_dna) and
+                            reference_amino_acid != sample_amino_acid):
+                        substitutions.add(
+                            (reference_amino_acid, sample_amino_acid))
+
+        return substitutions

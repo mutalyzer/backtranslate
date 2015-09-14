@@ -2,29 +2,31 @@
 This library provides functions for back translation from amino acids to
 nucleotides.
 
-    from backtranslate import backtranslate
+    from backtranslate.backtranslate import BackTranslate
 
-    # First create the reverse translation table for the organism of interest.
-    back_table = backtranslate.reverse_translation_table()
+    # Create a class instance, optionally giving the translation table id.
+    bt = BackTranslate()
     # Find all substitutions that transform the codon 'TTG' into a stop codon.
-    substitutions = backtranslate.one_subst(back_table, 'TGG', '*')
+    substitutions = bt.with_dna('TGG', '*')
 
 
 Sometimes we do not have access to the DNA sequence so we have to find
 possible substitutions from the amino acids directly.
 
     # Find all substitutions that transform a Tryptophan into a stop codon.
-    substitutions = backtranslate.one_subst_without_dna(back_table, 'W', '*')
+    substitutions = bt.without_dna('W', '*')
 
 To find out which substitution predictions can be improved by adding codon
 information, use the following function.
 
-    backtranslate.improvable_substitutions(back_table)
+    bt.improvable()
 
 To get substitutions in a readable format, we can use the following:
 
+    from backtranslate.util import subst_to_hgvs
+
     # Transform the substitutions to HGVS.
-    variants = backtranslate.subst_to_hgvs(substitutions, 12)
+    variants = subst_to_hgvs(substitutions, 12)
     # Print the variants in human readable format.
     print map(str, variants)
 
@@ -32,7 +34,7 @@ To get substitutions in a readable format, we can use the following:
 Use the command `back_translate` to find substitutions that explain an amino
 acid change:
 
-    $ back_translate with_dna NM_003002.2 69 Asp
+    $ back_translate with_dna NM_003002.3 69 Asp
     ['NM_003002.2:c.207G>T', 'NM_003002.2:c.207G>C']
 
 When using a genomic reference sequence, make sure to mention the gene name and

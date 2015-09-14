@@ -5,9 +5,8 @@ import argparse
 from suds.client import Client
 
 from . import usage, version, doc_split
-from .backtranslate import (
-    reverse_translation_table, protein_letters_3to1, one_subst,
-    one_subst_without_dna, subst_to_hgvs, improvable_substitutions)
+from .backtranslate import BackTranslate
+from .util import protein_letters_3to1, subst_to_hgvs
 
 
 URL = 'https://mutalyzer.nl/services/?wsdl'
@@ -30,9 +29,8 @@ def with_dna(reference, position, amino_acid):
     cds = str(service.runMutalyzer('{}:c.1del'.format(reference)).origCDS)
     codon = cds[offset:offset + 3]
 
-    back_table = reverse_translation_table()
-    substitutions = one_subst(
-        back_table, codon, protein_letters_3to1[amino_acid])
+    bt = BackTranslate()
+    substitutions = bt.with_dna(codon, protein_letters_3to1[amino_acid])
 
     return subst_to_hgvs(substitutions, offset)
 
@@ -49,11 +47,11 @@ def without_dna(reference, position, reference_amino_acid, amino_acid):
 
     :returns set: Variants that lead to the observed amino acid change.
     """
-    back_table = reverse_translation_table()
-    improvable = improvable_substitutions(back_table)
+    bt = BackTranslate()
+    improvable = bt.improvable()
 
-    substitutions = one_subst_without_dna(
-        back_table, protein_letters_3to1[reference_amino_acid],
+    substitutions = bt.without_dna(
+        protein_letters_3to1[reference_amino_acid],
         protein_letters_3to1[amino_acid])
 
     if (protein_letters_3to1[reference_amino_acid],
@@ -70,7 +68,7 @@ def main():
     input_parser = argparse.ArgumentParser(add_help=False)
     input_parser.add_argument(
         'reference', type=str,
-        help='accession number, e.g., AB026906.1(SDHD_v001)')
+        help='accession number, e.g., NM_003002.3')
     input_parser.add_argument('position', type=int, help='position, e.g., 92')
 
     reference_aa_parser = argparse.ArgumentParser(add_help=False)

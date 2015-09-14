@@ -11,17 +11,17 @@ import argparse
 
 from Bio import SeqIO
 
-from .backtranslate import one_subst, reverse_translation_table
+from .backtranslate import BackTranslate
 
 
 def find_positions(sequence, offset):
     """
     """
-    back_table = reverse_translation_table(1)
+    bt = BackTranslate()
     result = []
 
     for i in range(offset, len(sequence) - ((len(sequence) - offset) % 3), 3):
-        stop_positions = one_subst(back_table, sequence[i:i + 3], '*')
+        stop_positions = bt.with_dna(sequence[i:i + 3], '*')
 
         for position in stop_positions:
             result.append((i + position + 1, stop_positions[position]))
