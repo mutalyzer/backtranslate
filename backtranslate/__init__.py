@@ -11,7 +11,7 @@ Licensed under the MIT license, see the LICENSE file.
 from __future__ import unicode_literals
 
 
-__version_info__ = ('0', '0', '3')
+__version_info__ = ('0', '0', '4')
 
 
 __version__ = '.'.join(__version_info__)

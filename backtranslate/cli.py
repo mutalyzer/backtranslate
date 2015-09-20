@@ -3,46 +3,43 @@
 from __future__ import unicode_literals
 
 import argparse
+import re
 
-from suds.client import Client
+from Bio import SeqIO
 
 from . import usage, version, doc_split
 from .backtranslate import BackTranslate
-from .util import protein_letters_3to1, subst_to_hgvs
+from .util import protein_letters_3to1, subst_to_cds
 
 
-URL = 'https://mutalyzer.nl/services/?wsdl'
-
-
-def with_dna(reference, position, amino_acid):
+def with_dna(input_handle, output_handle, offset, position, amino_acid):
     """
     Get all variants that result in the observed amino acid change.
 
-    :arg unicode reference: Accession number.
+    :arg stream input_handle: Open readable handle to a FASTA file.
+    :arg stream output_handle: Open writable handle to a file.
+    :arg int offset: Position of the CDS start in the reference sequence.
     :arg int position: Position of the amino acid change (in p. coordinates).
     :arg unicode amino_acid: Observed amino acid.
 
     :returns set: Variants that lead to the observed amino acid change.
     """
-    offset = (position - 1) * 3
-
-    # Trick to get the reference sequence.
-    service = Client(URL, cache=None).service
-    cds = unicode(service.runMutalyzer('{}:c.1del'.format(reference)).origCDS)
-    codon = cds[offset:offset + 3]
-
     bt = BackTranslate()
+    reference = unicode(SeqIO.parse(input_handle, 'fasta').next().seq)
+    codon_pos = offset - 1 + (position - 1) * 3
+    codon = reference[codon_pos:codon_pos + 3]
     substitutions = bt.with_dna(codon, protein_letters_3to1[amino_acid])
 
-    return subst_to_hgvs(substitutions, offset)
+    for subst in subst_to_cds(substitutions, (position - 1) * 3):
+        output_handle.write('{}\t{}\t{}\n'.format(*subst))
 
 
-def without_dna(reference, position, reference_amino_acid, amino_acid):
+def without_dna(output_handle, position, reference_amino_acid, amino_acid):
     """
     Get all variants that result in the observed amino acid change without
     making use of the transcript.
 
-    :arg unicode reference: Accession number.
+    :arg stream output_handle: Open writable handle to a file.
     :arg int position: Position of the amino acid change (in p. coordinates).
     :arg unicode reference_amino_acid: Observed amino acid.
     :arg unicode amino_acid: Observed amino acid.
@@ -58,9 +55,31 @@ def without_dna(reference, position, reference_amino_acid, amino_acid):
 
     if (protein_letters_3to1[reference_amino_acid],
             protein_letters_3to1[amino_acid]) in improvable:
-        print 'This substitution can be improved by using `with dna`.'
+        output_handle.write(
+            'This substitution can be improved by using `with_dna`.\n')
 
-    return subst_to_hgvs(substitutions, (position - 1) * 3)
+    for subst in subst_to_cds(substitutions, (position - 1) * 3):
+        output_handle.write('{}\t{}\t{}\n'.format(*subst))
+
+
+def find_stops(input_handle, output_handle, offset):
+    """
+    Almost stop codon finder.
+
+    :arg stream input_handle: Open readable handle to a FASTA file.
+    :arg stream output_handle: Open writable handle to a file.
+    :arg int offset: Position of the CDS start in the reference sequence.
+    """
+    bt = BackTranslate()
+    sequence = unicode(SeqIO.parse(input_handle, 'fasta').next().seq)
+
+    for index, codon in enumerate(re.findall('...', sequence[offset - 1:])):
+        stop_positions = bt.with_dna(codon, '*')
+
+        for position in stop_positions:
+            for subst in stop_positions[position]:
+                output_handle.write('{}\t{}\t{}\n'.format(
+                    offset + (index * 3) + position, *subst))
 
 
 def main():
@@ -68,17 +87,23 @@ def main():
     Main entry point.
     """
     input_parser = argparse.ArgumentParser(add_help=False)
-    input_parser.add_argument(
-        'reference', type=unicode,
-        help='accession number, e.g., NM_003002.3')
-    input_parser.add_argument('position', type=int, help='position, e.g., 92')
+    input_parser.add_argument('input_handle', metavar='INPUT',
+        type=argparse.FileType('r'), help='input file in FASTA format')
+    input_parser.add_argument('-o', dest='offset', type=int, default=1,
+        help='offset in the reference sequence (int default=%(default)s)')
+
+    output_parser = argparse.ArgumentParser(add_help=False)
+    output_parser.add_argument('output_handle', metavar='OUTPUT',
+        type=argparse.FileType('w'), help='output file')
 
     reference_aa_parser = argparse.ArgumentParser(add_help=False)
     reference_aa_parser.add_argument(
         'reference_amino_acid', type=unicode, help='amino acid, e.g., Asp')
 
-    observed_aa_parser = argparse.ArgumentParser(add_help=False)
-    observed_aa_parser.add_argument(
+    observed_parser = argparse.ArgumentParser(add_help=False)
+    observed_parser.add_argument(
+        'position', type=int, help='position, e.g., 92')
+    observed_parser.add_argument(
         'amino_acid', type=unicode, help='amino acid, e.g., Tyr')
 
     parser = argparse.ArgumentParser(
@@ -88,22 +113,28 @@ def main():
     subparsers = parser.add_subparsers(dest='subcommand')
 
     parser_with_dna = subparsers.add_parser(
-        'with_dna', parents=[input_parser, observed_aa_parser],
+        'with_dna', parents=[input_parser, output_parser, observed_parser],
         description=doc_split(with_dna))
     parser_with_dna.set_defaults(func=with_dna)
 
     parser_without_dna = subparsers.add_parser(
         'without_dna',
-        parents=[input_parser, reference_aa_parser, observed_aa_parser],
+        parents=[output_parser, reference_aa_parser, observed_parser],
         description=doc_split(without_dna))
     parser_without_dna.set_defaults(func=without_dna)
+
+    parser_find_stops = subparsers.add_parser(
+        'find_stops',
+        parents=[input_parser, output_parser],
+        description=doc_split(find_stops))
+    parser_find_stops.set_defaults(func=find_stops)
 
     args = parser.parse_args()
 
     try:
-        print map(lambda x: '{}:c.{}'.format(args.reference, x), args.func(
+        args.func(
             **dict((k, v) for k, v in vars(args).items() if k not in
-            ('func', 'subcommand'))))
+            ('func', 'subcommand')))
     except IOError as error:
         parser.error(error)
 

@@ -5,7 +5,7 @@ if sys.version_info < (2, 6):
     raise Exception('backtranslate requires Python 2.6 or higher.')
 
 # Todo: How does this play with pip freeze requirement files?
-requires = ['biopython', 'python-Levenshtein', 'description-extractor']
+requires = ['biopython', 'python-Levenshtein']
 
 # Python 2.6 does not include the argparse module.
 try:
@@ -29,7 +29,6 @@ setup(
     install_requires=requires,
     entry_points = {
         'console_scripts': [
-            'find_stops = backtranslate.find_stops:main',
             'back_translate = backtranslate.cli:main'
         ]
     },

@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 from Bio.Data import IUPACData
-from extractor.variant import Allele, DNAVar, ISeq, ISeqList
 
 
 def _three_to_one():
@@ -14,28 +13,22 @@ def _three_to_one():
         IUPACData.protein_letters_3to1_extended.items()) + [('Ter', '*')])
 
 
-def subst_to_hgvs(substitutions, offset=0):
+def subst_to_cds(substitutions, offset):
     """
-    Translate a set of substitutions to HGVS.
+    Convert a set of substitutions to CDS coordinates.
 
     :arg dict substitutions: Set of single nucleotide substitutions indexed by
         position.
     :arg int offset: Codon position in the CDS.
 
-    :returns set: Substitutions in HGVS format.
+    :returns set: Substitutions in CDS coordinates.
     """
     variants = set()
 
     for position in substitutions:
         for substitution in substitutions[position]:
-            variants.add(Allele([DNAVar(
-                start=position + offset + 1,
-                end=position + offset + 1,
-                sample_start=position + offset + 1,
-                sample_end=position + offset + 1,
-                type='subst',
-                deleted=ISeqList([ISeq(sequence=substitution[0])]),
-                inserted=ISeqList([ISeq(sequence=substitution[1])]))]))
+            variants.add(
+                (position + offset + 1, substitution[0], substitution[1]))
 
     return variants
 
