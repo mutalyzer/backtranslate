@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from Bio.Data import IUPACData
 from extractor.variant import Allele, DNAVar, ISeq, ISeqList
 
@@ -8,10 +10,8 @@ def _three_to_one():
 
     :returns dict: Three letter to one letter amino acids table.
     """
-    protein_letters_3to1 = dict(IUPACData.protein_letters_3to1_extended)
-    protein_letters_3to1.update({'Ter': '*'})
-
-    return protein_letters_3to1
+    return dict(map(lambda x: (unicode(x[0]), unicode(x[1])),
+        IUPACData.protein_letters_3to1_extended.items()) + [('Ter', '*')])
 
 
 def subst_to_hgvs(substitutions, offset=0):

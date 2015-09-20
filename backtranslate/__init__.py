@@ -8,6 +8,8 @@ Copyright (c) 2015 Jeroen F.J. Laros <j.f.j.laros@lumc.nl>
 Licensed under the MIT license, see the LICENSE file.
 """
 
+from __future__ import unicode_literals
+
 
 __version_info__ = ('0', '0', '3')
 

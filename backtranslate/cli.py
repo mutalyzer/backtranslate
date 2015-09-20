@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import unicode_literals
+
 import argparse
 
 from suds.client import Client
@@ -16,9 +18,9 @@ def with_dna(reference, position, amino_acid):
     """
     Get all variants that result in the observed amino acid change.
 
-    :arg str reference: Accession number.
+    :arg unicode reference: Accession number.
     :arg int position: Position of the amino acid change (in p. coordinates).
-    :arg str amino_acid: Observed amino acid.
+    :arg unicode amino_acid: Observed amino acid.
 
     :returns set: Variants that lead to the observed amino acid change.
     """
@@ -26,7 +28,7 @@ def with_dna(reference, position, amino_acid):
 
     # Trick to get the reference sequence.
     service = Client(URL, cache=None).service
-    cds = str(service.runMutalyzer('{}:c.1del'.format(reference)).origCDS)
+    cds = unicode(service.runMutalyzer('{}:c.1del'.format(reference)).origCDS)
     codon = cds[offset:offset + 3]
 
     bt = BackTranslate()
@@ -40,10 +42,10 @@ def without_dna(reference, position, reference_amino_acid, amino_acid):
     Get all variants that result in the observed amino acid change without
     making use of the transcript.
 
-    :arg str reference: Accession number.
+    :arg unicode reference: Accession number.
     :arg int position: Position of the amino acid change (in p. coordinates).
-    :arg str reference_amino_acid: Observed amino acid.
-    :arg str amino_acid: Observed amino acid.
+    :arg unicode reference_amino_acid: Observed amino acid.
+    :arg unicode amino_acid: Observed amino acid.
 
     :returns set: Variants that lead to the observed amino acid change.
     """
@@ -67,17 +69,17 @@ def main():
     """
     input_parser = argparse.ArgumentParser(add_help=False)
     input_parser.add_argument(
-        'reference', type=str,
+        'reference', type=unicode,
         help='accession number, e.g., NM_003002.3')
     input_parser.add_argument('position', type=int, help='position, e.g., 92')
 
     reference_aa_parser = argparse.ArgumentParser(add_help=False)
     reference_aa_parser.add_argument(
-        'reference_amino_acid', type=str, help='amino acid, e.g., Asp')
+        'reference_amino_acid', type=unicode, help='amino acid, e.g., Asp')
 
     observed_aa_parser = argparse.ArgumentParser(add_help=False)
     observed_aa_parser.add_argument(
-        'amino_acid', type=str, help='amino acid, e.g., Tyr')
+        'amino_acid', type=unicode, help='amino acid, e.g., Tyr')
 
     parser = argparse.ArgumentParser(
         description=usage[0], epilog=usage[1],

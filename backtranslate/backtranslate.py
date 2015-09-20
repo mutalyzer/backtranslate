@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from collections import defaultdict
 
 from Bio.Data import CodonTable
@@ -34,10 +36,11 @@ def reverse_translation_table(table_id=1):
     forward_table = CodonTable.unambiguous_dna_by_id[table_id]
     back_table = defaultdict(set)
 
-    back_table['*'] = set(forward_table.stop_codons)
+    back_table['*'] = set(map(unicode, forward_table.stop_codons))
 
     for codon in forward_table.forward_table:
-        back_table[forward_table.forward_table[codon]].add(codon)
+        back_table[unicode(forward_table.forward_table[codon])].add(
+            unicode(codon))
 
     return back_table
 
@@ -62,8 +65,8 @@ class BackTranslate(object):
 
         :arg dictsubstitutions: Set of single nucleotide substitutions indexed
             by position.
-        :arg str reference_codon: Original codon.
-        :arg str amino_acid: Observed amino acid.
+        :arg unicode reference_codon: Original codon.
+        :arg unicode amino_acid: Observed amino acid.
         """
         for codon in self._back_table[amino_acid]:
             if hamming(codon, reference_codon) == 1:
@@ -78,8 +81,8 @@ class BackTranslate(object):
         Find single nucleotide substitutions that given a reference codon
         explains an observed amino acid.
 
-        :arg str reference_codon: Original codon.
-        :arg str amino_acid: Observed amino acid.
+        :arg unicode reference_codon: Original codon.
+        :arg unicode amino_acid: Observed amino acid.
 
         :returns dict: Set of single nucleotide substitutions indexed by
             position.
@@ -96,8 +99,8 @@ class BackTranslate(object):
         Find single nucleotide substitutions that given a reference amino acid
         explains an observed amino acid.
 
-        :arg str reference_amino_acid: Original amino acid.
-        :arg str amino_acid: Observed amino acid.
+        :arg unicode reference_amino_acid: Original amino acid.
+        :arg unicode amino_acid: Observed amino acid.
 
         :returns dict: Set of single nucleotide substitutions indexed by
             position.

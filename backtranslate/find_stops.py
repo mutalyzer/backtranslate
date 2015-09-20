@@ -7,6 +7,8 @@ Almost stop codon finder.
 (C) 2015 Jeroen F.J. Laros <J.F.J.Laros@lumc.nl>
 """
 
+from __future__ import unicode_literals
+
 import argparse
 
 from Bio import SeqIO
@@ -32,7 +34,7 @@ def find_positions(sequence, offset):
 def find_stops(input_handle, output_handle, offset):
     """
     """
-    sequence = str(SeqIO.parse(input_handle, 'fasta').next().seq)
+    sequence = unicode(SeqIO.parse(input_handle, 'fasta').next().seq)
 
     for i in find_positions(sequence, offset):
         output_handle.write('{}\n'.format(i))
