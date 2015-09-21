@@ -1,7 +1,3 @@
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-from future.builtins import str, zip
-
 import sys
 
 from setuptools import setup
@@ -11,7 +7,7 @@ if sys.version_info < (2, 6):
     raise Exception('backtranslate requires Python 2.6 or higher.')
 
 # Todo: How does this play with pip freeze requirement files?
-requires = ['biopython', 'python-Levenshtein']
+requires = ['biopython', 'future', 'python-Levenshtein']
 
 # Python 2.6 does not include the argparse module.
 try:
