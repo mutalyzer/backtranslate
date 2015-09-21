@@ -31,17 +31,17 @@ To get substitutions in a readable format, we can use the following:
     variants = subst_to_cds(substitutions, 12)
 
 ## Command line interface
-Use the command `back_translate` to find substitutions that explain an amino
+Use the command `backtranslate` to find substitutions that explain an amino
 acid change:
 
-    $ back_translate with_dna -o 210 data/mhv.fa - 1 Leu
+    $ backtranslate with_dna -o 210 data/mhv.fa - 1 Leu
     1       A       C
     1       A       T
 
 
 If no reference is available, use the `without_dna` subcommand:
 
-    $ back_translate without_dna - Asp 92 Tyr
+    $ backtranslate without_dna - Asp 92 Tyr
     274     G       T
 
 
@@ -50,7 +50,7 @@ to stop codons. This list of destructive substitutions are useful when
 analysing a pool of viral transcripts. Counting the appropriate nucleotides at
 the given positions gives insight into how many transcripts are active.
 
-    $ back_translate find_stops -o 210 data/mhv.fa -
+    $ backtranslate find_stops -o 210 data/mhv.fa -
     216     A       T
     225     A       T
     230     C       A

@@ -71,8 +71,8 @@ setup(
     packages=[package],
     install_requires=dependencies,
     entry_points={
-        'console_scripts': ['{0} = {0}.{0}:main'.format(package)]
-        },
+        'console_scripts': ['{0} = {0}.cli:main'.format(package)]
+    },
     classifiers=classifiers,
     keywords=' '.join(keywords)
 )
