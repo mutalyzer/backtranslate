@@ -58,7 +58,6 @@ classifiers += [
     '{} :: {}'.format(language_string, supported[-1][0])] + \
     ['{} :: {}.{}'.format(language_string, *version) for version in supported]
 
-print classifiers
 setup(
     name=package_name,
     version=distmeta['__version_info__'],
