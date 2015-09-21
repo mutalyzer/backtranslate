@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-from __future__ import unicode_literals
+
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals)
+from future.builtins import str, zip
 
 import argparse
 import re
@@ -20,12 +23,12 @@ def with_dna(input_handle, output_handle, offset, position, amino_acid):
     :arg stream output_handle: Open writable handle to a file.
     :arg int offset: Position of the CDS start in the reference sequence.
     :arg int position: Position of the amino acid change (in p. coordinates).
-    :arg unicode amino_acid: Observed amino acid.
+    :arg str amino_acid: Observed amino acid.
 
     :returns set: Variants that lead to the observed amino acid change.
     """
     bt = BackTranslate()
-    reference = unicode(SeqIO.parse(input_handle, 'fasta').next().seq)
+    reference = str(SeqIO.parse(input_handle, 'fasta').next().seq)
     codon_pos = offset - 1 + (position - 1) * 3
     codon = reference[codon_pos:codon_pos + 3]
     substitutions = bt.with_dna(codon, protein_letters_3to1[amino_acid])
@@ -41,8 +44,8 @@ def without_dna(output_handle, position, reference_amino_acid, amino_acid):
 
     :arg stream output_handle: Open writable handle to a file.
     :arg int position: Position of the amino acid change (in p. coordinates).
-    :arg unicode reference_amino_acid: Observed amino acid.
-    :arg unicode amino_acid: Observed amino acid.
+    :arg str reference_amino_acid: Observed amino acid.
+    :arg str amino_acid: Observed amino acid.
 
     :returns set: Variants that lead to the observed amino acid change.
     """
@@ -71,7 +74,7 @@ def find_stops(input_handle, output_handle, offset):
     :arg int offset: Position of the CDS start in the reference sequence.
     """
     bt = BackTranslate()
-    sequence = unicode(SeqIO.parse(input_handle, 'fasta').next().seq)
+    sequence = str(SeqIO.parse(input_handle, 'fasta').next().seq)
 
     for index, codon in enumerate(re.findall('...', sequence[offset - 1:])):
         stop_positions = bt.with_dna(codon, '*')
@@ -98,13 +101,13 @@ def main():
 
     reference_aa_parser = argparse.ArgumentParser(add_help=False)
     reference_aa_parser.add_argument(
-        'reference_amino_acid', type=unicode, help='amino acid, e.g., Asp')
+        'reference_amino_acid', type=str, help='amino acid, e.g., Asp')
 
     observed_parser = argparse.ArgumentParser(add_help=False)
     observed_parser.add_argument(
         'position', type=int, help='position, e.g., 92')
     observed_parser.add_argument(
-        'amino_acid', type=unicode, help='amino acid, e.g., Tyr')
+        'amino_acid', type=str, help='amino acid, e.g., Tyr')
 
     parser = argparse.ArgumentParser(
         description=usage[0], epilog=usage[1],

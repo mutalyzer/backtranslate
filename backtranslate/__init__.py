@@ -8,7 +8,10 @@ Copyright (c) 2015 Jeroen F.J. Laros <j.f.j.laros@lumc.nl>
 Licensed under the MIT license, see the LICENSE file.
 """
 
-from __future__ import unicode_literals
+
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals)
+from future.builtins import str, zip
 
 
 __version_info__ = ('0', '0', '4')

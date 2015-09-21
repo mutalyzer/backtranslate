@@ -1,4 +1,6 @@
-from __future__ import unicode_literals
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals)
+from future.builtins import str, zip
 
 from Bio.Data import IUPACData
 
@@ -9,7 +11,7 @@ def _three_to_one():
 
     :returns dict: Three letter to one letter amino acids table.
     """
-    return dict(map(lambda x: (unicode(x[0]), unicode(x[1])),
+    return dict(map(lambda x: (str(x[0]), str(x[1])),
         IUPACData.protein_letters_3to1_extended.items()) + [('Ter', '*')])
 
 

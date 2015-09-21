@@ -1,5 +1,11 @@
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals)
+from future.builtins import str, zip
+
 import sys
+
 from setuptools import setup
+
 
 if sys.version_info < (2, 6):
     raise Exception('backtranslate requires Python 2.6 or higher.')
