@@ -2,6 +2,7 @@
 Tests for the backtranslate.backtranslate module.
 """
 
+from __future__ import unicode_literals
 
 from backtranslate.backtranslate import BackTranslate, cmp_subst
 
