@@ -43,7 +43,7 @@ def reverse_translation_table(table_id=1):
     for codon in forward_table.forward_table:
         back_table[str(forward_table.forward_table[codon])].add(str(codon))
 
-    return back_table
+    return dict(back_table)
 
 
 class BackTranslate(object):
@@ -64,8 +64,8 @@ class BackTranslate(object):
         Find single nucleotide substitutions that given a reference codon
         explains an observed amino acid.
 
-        :arg dictsubstitutions: Set of single nucleotide substitutions indexed
-            by position.
+        :arg defaultdict(set) substitutions: Set of single nucleotide
+            substitutions indexed by position.
         :arg str reference_codon: Original codon.
         :arg str amino_acid: Observed amino acid.
         """
@@ -92,7 +92,7 @@ class BackTranslate(object):
 
         self._one_subst(substitutions, reference_codon, amino_acid)
 
-        return substitutions
+        return dict(substitutions)
 
 
     def without_dna(self, reference_amino_acid, amino_acid):
@@ -111,7 +111,7 @@ class BackTranslate(object):
         for reference_codon in self._back_table[reference_amino_acid]:
             self._one_subst(substitutions, reference_codon, amino_acid)
 
-        return substitutions
+        return dict(substitutions)
 
 
     def improvable(self):
