@@ -3,9 +3,9 @@ This library provides functions for back translation from amino acids to
 nucleotides.
 
     >>> from __future__ import unicode_literals
-
+    >>>
     >>> from backtranslate.backtranslate import BackTranslate
-
+    >>>
     >>> # Create a class instance, optionally giving the translation table id.
     >>> bt = BackTranslate()
     >>> # Find all substitutions that transform the codon 'TTG' into a stop
@@ -35,8 +35,9 @@ information, use the following function.
 To get substitutions in a readable format, we can use the following:
 
     >>> from backtranslate.util import subst_to_cds
-
+    >>>
     >>> substitutions = bt.without_dna('W', '*')
+    >>>
     >>> # Transform the substitutions to CDS coordinates.
     >>> subst_to_cds(substitutions, 12)
     set([(15, 'G', 'A'), (14, 'G', 'A')])
