@@ -8,6 +8,7 @@ nucleotides.
     >>>
     >>> # Create a class instance, optionally giving the translation table id.
     >>> bt = BackTranslate()
+    >>>
     >>> # Find all substitutions that transform the codon 'TTG' into a stop
     >>> # codon.
     >>> bt.with_dna('TGG', '*')
