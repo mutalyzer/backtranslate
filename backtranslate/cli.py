@@ -65,13 +65,14 @@ def without_dna(output_handle, position, reference_amino_acid, amino_acid):
         output_handle.write('{}\t{}\t{}\n'.format(*subst))
 
 
-def find_stops(input_handle, output_handle, offset):
+def find_stops(input_handle, output_handle, offset, compact):
     """
     Almost stop codon finder.
 
     :arg stream input_handle: Open readable handle to a FASTA file.
     :arg stream output_handle: Open writable handle to a file.
     :arg int offset: Position of the CDS start in the reference sequence.
+    :arg bool compact: Output one line per position.
     """
     bt = BackTranslate()
     sequence = str(SeqIO.parse(input_handle, 'fasta').next().seq)
@@ -80,9 +81,15 @@ def find_stops(input_handle, output_handle, offset):
         stop_positions = bt.with_dna(codon, '*')
 
         for position in stop_positions:
-            for subst in stop_positions[position]:
+            if not compact:
+                for subst in stop_positions[position]:
+                    output_handle.write('{}\t{}\t{}\n'.format(
+                        offset + (index * 3) + position, *subst))
+            else:
                 output_handle.write('{}\t{}\t{}\n'.format(
-                    offset + (index * 3) + position, *subst))
+                    offset + (index * 3) + position,
+                    list(stop_positions[position])[0][0],
+                    ','.join(map(lambda x: x[1], stop_positions[position]))))
 
 
 def main():
@@ -130,6 +137,9 @@ def main():
         'find_stops',
         parents=[input_parser, output_parser],
         description=doc_split(find_stops))
+    parser_find_stops.add_argument(
+        '-c', dest='compact', default=False, action='store_true',
+        help='compact output')
     parser_find_stops.set_defaults(func=find_stops)
 
     args = parser.parse_args()
