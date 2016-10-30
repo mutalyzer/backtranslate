@@ -12,7 +12,7 @@ license = 'MIT License'
 keywords = ['bioinformatics']
 
 dependencies = ['biopython', 'future', 'python-Levenshtein']
-develop_dependencies = ['pytest', 'tox']
+develop_dependencies = ['fake-open', 'pytest', 'tox']
 supported = [(2, 7), (3, 3), (3, 4)]
 classifiers = [
     'Development Status :: 3 - Alpha',

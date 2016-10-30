@@ -10,11 +10,9 @@ import sys
 from hashlib import md5
 from io import StringIO
 
+from fake_open import md5_check
+
 from backtranslate import cli
-
-
-def md5_check(data, md5sum):
-    return md5(data).hexdigest() == md5sum
 
 
 class TestParser(object):
