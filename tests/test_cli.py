@@ -5,14 +5,16 @@ from __future__ import (
     absolute_import, division, print_function, unicode_literals)
 from future.builtins import str, zip
 
-import StringIO
-import md5
+import sys
+
+from hashlib import md5
+from io import StringIO
 
 from backtranslate import cli
 
 
 def md5_check(data, md5sum):
-    return md5.md5(data).hexdigest() == md5sum
+    return md5(data).hexdigest() == md5sum
 
 
 class TestParser(object):
@@ -21,7 +23,7 @@ class TestParser(object):
     """
     def setup(self):
         self._input = open('data/mhv.fa')
-        self._output = StringIO.StringIO()
+        self._output = StringIO()
 
     def test_with_dna(self):
         cli.with_dna(self._input, self._output, 210, 1, 'Leu')
@@ -36,9 +38,9 @@ class TestParser(object):
     def test_find_stops(self):
         cli.find_stops(self._input, self._output, 210, False)
         assert md5_check(
-            self._output.getvalue(), 'b3dbcc94594ab61e36dbb2256d4b4561')
+            self._output.getvalue(), '41c105e384651201970c0b2efd3afa3e')
 
     def test_find_stops_compact(self):
         cli.find_stops(self._input, self._output, 210, True)
         assert md5_check(
-            self._output.getvalue(), '34aa553f2ea72ca992b2568a963c27ee')
+            self._output.getvalue(), '67c62854f4c0972e3fbf3dcec81b6a94')

@@ -30,7 +30,7 @@ def with_dna(input_handle, output_handle, offset, position, amino_acid):
     codon = reference[codon_pos:codon_pos + 3]
     substitutions = bt.with_dna(codon, protein_letters_3to1[amino_acid])
 
-    for subst in subst_to_cds(substitutions, (position - 1) * 3):
+    for subst in sorted(subst_to_cds(substitutions, (position - 1) * 3)):
         output_handle.write('{}\t{}\t{}\n'.format(*subst))
 
 
@@ -58,7 +58,7 @@ def without_dna(output_handle, position, reference_amino_acid, amino_acid):
         output_handle.write(
             'This substitution can be improved by using `with_dna`.\n')
 
-    for subst in subst_to_cds(substitutions, (position - 1) * 3):
+    for subst in sorted(subst_to_cds(substitutions, (position - 1) * 3)):
         output_handle.write('{}\t{}\t{}\n'.format(*subst))
 
 
@@ -79,14 +79,15 @@ def find_stops(input_handle, output_handle, offset, compact):
 
         for position in stop_positions:
             if not compact:
-                for subst in stop_positions[position]:
+                for subst in sorted(stop_positions[position]):
                     output_handle.write('{}\t{}\t{}\n'.format(
                         offset + (index * 3) + position, *subst))
             else:
                 output_handle.write('{}\t{}\t{}\n'.format(
                     offset + (index * 3) + position,
                     list(stop_positions[position])[0][0],
-                    ','.join(map(lambda x: x[1], stop_positions[position]))))
+                    ','.join(map(lambda x: x[1],
+                    sorted(stop_positions[position])))))
 
 
 def main():

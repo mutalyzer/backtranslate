@@ -12,6 +12,7 @@ license = 'MIT License'
 keywords = ['bioinformatics']
 
 dependencies = ['biopython', 'future', 'python-Levenshtein']
+develop_dependencies = ['pytest', 'tox']
 supported = [(2, 7), (3, 3), (3, 4)]
 classifiers = [
     'Development Status :: 3 - Alpha',
@@ -71,6 +72,7 @@ setup(
     platforms=['any'],
     packages=[package],
     install_requires=dependencies,
+    tests_require=develop_dependencies,
     entry_points={
         'console_scripts': ['{0} = {0}.cli:main'.format(package)]
     },

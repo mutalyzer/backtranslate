@@ -1,5 +1,7 @@
 *.pyc
 *.egg-info
-build
-dist
-.ipynb_checkpoints
+build/
+dist/
+.ipynb_checkpoints/
+.cache/
+.tox/
