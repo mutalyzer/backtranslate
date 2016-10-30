@@ -25,7 +25,7 @@ def with_dna(input_handle, output_handle, offset, position, amino_acid):
     :returns set: Variants that lead to the observed amino acid change.
     """
     bt = BackTranslate()
-    reference = str(SeqIO.parse(input_handle, 'fasta').next().seq)
+    reference = str(next(SeqIO.parse(input_handle, 'fasta')).seq)
     codon_pos = offset - 1 + (position - 1) * 3
     codon = reference[codon_pos:codon_pos + 3]
     substitutions = bt.with_dna(codon, protein_letters_3to1[amino_acid])
@@ -72,7 +72,7 @@ def find_stops(input_handle, output_handle, offset, compact):
     :arg bool compact: Output one line per position.
     """
     bt = BackTranslate()
-    sequence = str(SeqIO.parse(input_handle, 'fasta').next().seq)
+    sequence = str(next(SeqIO.parse(input_handle, 'fasta')).seq)
 
     for index, codon in enumerate(re.findall('...', sequence[offset - 1:])):
         stop_positions = bt.with_dna(codon, '*')
