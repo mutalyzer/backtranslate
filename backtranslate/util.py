@@ -12,7 +12,7 @@ def _three_to_one():
     :returns dict: Three letter to one letter amino acids table.
     """
     return dict(list(map(lambda x: (str(x[0]), str(x[1])),
-        IUPACData.protein_letters_3to1_extended.items()) + [('Ter', '*')]))
+        IUPACData.protein_letters_3to1_extended.items())) + [('Ter', '*')])
 
 
 def subst_to_cds(substitutions, offset):
