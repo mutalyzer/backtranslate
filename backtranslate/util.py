@@ -1,13 +1,8 @@
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-from future.builtins import str, zip
-
 from Bio.Data import IUPACData
 
 
 def _three_to_one():
-    """
-    The three letter to one letter table for amino acids including stop.
+    """The three letter to one letter table for amino acids including stop.
 
     :returns dict: Three letter to one letter amino acids table.
     """
@@ -16,8 +11,7 @@ def _three_to_one():
 
 
 def subst_to_cds(substitutions, offset):
-    """
-    Convert a set of substitutions to CDS coordinates.
+    """ Convert a set of substitutions to CDS coordinates.
 
     :arg dict substitutions: Set of single nucleotide substitutions indexed by
         position.
