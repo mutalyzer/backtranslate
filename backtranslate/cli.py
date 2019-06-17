@@ -1,20 +1,14 @@
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-from future.builtins import str, zip
-
-import argparse
-import re
+from argparse import ArgumentParser, FileType, RawDescriptionHelpFormatter
+from re import findall
 
 from Bio import SeqIO
 
-from . import usage, version, doc_split
-from .backtranslate import BackTranslate
+from . import BackTranslate, usage, version, doc_split
 from .util import protein_letters_3to1, subst_to_cds
 
 
 def with_dna(input_handle, output_handle, offset, position, amino_acid):
-    """
-    Get all variants that result in the observed amino acid change.
+    """Get all variants that result in the observed amino acid change.
 
     :arg stream input_handle: Open readable handle to a FASTA file.
     :arg stream output_handle: Open writable handle to a file.
@@ -35,8 +29,7 @@ def with_dna(input_handle, output_handle, offset, position, amino_acid):
 
 
 def without_dna(output_handle, position, reference_amino_acid, amino_acid):
-    """
-    Get all variants that result in the observed amino acid change without
+    """Get all variants that result in the observed amino acid change without
     making use of the transcript.
 
     :arg stream output_handle: Open writable handle to a file.
@@ -63,8 +56,7 @@ def without_dna(output_handle, position, reference_amino_acid, amino_acid):
 
 
 def find_stops(input_handle, output_handle, offset, compact):
-    """
-    Almost stop codon finder.
+    """Almost stop codon finder.
 
     :arg stream input_handle: Open readable handle to a FASTA file.
     :arg stream output_handle: Open writable handle to a file.
@@ -74,10 +66,10 @@ def find_stops(input_handle, output_handle, offset, compact):
     bt = BackTranslate()
     sequence = str(next(SeqIO.parse(input_handle, 'fasta')).seq)
 
-    for index, codon in enumerate(re.findall('...', sequence[offset - 1:])):
+    for index, codon in enumerate(findall('...', sequence[offset - 1:])):
         stop_positions = bt.with_dna(codon, '*')
 
-        for position in stop_positions:
+        for position in sorted(stop_positions):
             if not compact:
                 for subst in sorted(stop_positions[position]):
                     output_handle.write('{}\t{}\t{}\n'.format(
@@ -91,54 +83,55 @@ def find_stops(input_handle, output_handle, offset, compact):
 
 
 def main():
-    """
-    Main entry point.
-    """
-    input_parser = argparse.ArgumentParser(add_help=False)
-    input_parser.add_argument('input_handle', metavar='INPUT',
-        type=argparse.FileType('r'), help='input file in FASTA format')
-    input_parser.add_argument('-o', dest='offset', type=int, default=1,
+    """Main entry point."""
+    input_parser = ArgumentParser(add_help=False)
+    input_parser.add_argument(
+        'input_handle', metavar='INPUT', type=FileType('r'),
+        help='input file in FASTA format')
+    input_parser.add_argument(
+        '-o', dest='offset', type=int, default=1,
         help='offset in the reference sequence (int default=%(default)s)')
 
-    output_parser = argparse.ArgumentParser(add_help=False)
-    output_parser.add_argument('output_handle', metavar='OUTPUT',
-        type=argparse.FileType('w'), help='output file')
+    output_parser = ArgumentParser(add_help=False)
+    output_parser.add_argument(
+        'output_handle', metavar='OUTPUT', type=FileType('w'),
+        help='output file')
 
-    reference_aa_parser = argparse.ArgumentParser(add_help=False)
+    reference_aa_parser = ArgumentParser(add_help=False)
     reference_aa_parser.add_argument(
         'reference_amino_acid', type=str, help='amino acid, e.g., Asp')
 
-    observed_parser = argparse.ArgumentParser(add_help=False)
+    observed_parser = ArgumentParser(add_help=False)
     observed_parser.add_argument(
         'position', type=int, help='position, e.g., 92')
     observed_parser.add_argument(
         'amino_acid', type=str, help='amino acid, e.g., Tyr')
 
-    parser = argparse.ArgumentParser(
+    parser = ArgumentParser(
         description=usage[0], epilog=usage[1],
-        formatter_class=argparse.RawDescriptionHelpFormatter)
+        formatter_class=RawDescriptionHelpFormatter)
     parser.add_argument('-v', action='version', version=version(parser.prog))
     subparsers = parser.add_subparsers(dest='subcommand')
+    subparsers.required = True
 
-    parser_with_dna = subparsers.add_parser(
+    subparser = subparsers.add_parser(
         'with_dna', parents=[input_parser, output_parser, observed_parser],
         description=doc_split(with_dna))
-    parser_with_dna.set_defaults(func=with_dna)
+    subparser.set_defaults(func=with_dna)
 
-    parser_without_dna = subparsers.add_parser(
+    subparser = subparsers.add_parser(
         'without_dna',
         parents=[output_parser, reference_aa_parser, observed_parser],
         description=doc_split(without_dna))
-    parser_without_dna.set_defaults(func=without_dna)
+    subparser.set_defaults(func=without_dna)
 
-    parser_find_stops = subparsers.add_parser(
-        'find_stops',
-        parents=[input_parser, output_parser],
+    subparser = subparsers.add_parser(
+        'find_stops', parents=[input_parser, output_parser],
         description=doc_split(find_stops))
-    parser_find_stops.add_argument(
+    subparser.add_argument(
         '-c', dest='compact', default=False, action='store_true',
         help='compact output')
-    parser_find_stops.set_defaults(func=find_stops)
+    subparser.set_defaults(func=find_stops)
 
     args = parser.parse_args()
 
@@ -148,7 +141,3 @@ def main():
             ('func', 'subcommand')))
     except IOError as error:
         parser.error(error)
-
-
-if __name__ == '__main__':
-    main()
