@@ -1,7 +1,3 @@
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-from future.builtins import str, zip
-
 from collections import defaultdict
 
 from Bio.Data import CodonTable
@@ -9,8 +5,7 @@ from Levenshtein import hamming
 
 
 def cmp_subst(subst_1, subst_2):
-    """
-    Compare two substitution sets.
+    """Compare two substitution sets.
 
     :arg dict subst_1: Substitution set.
     :arg dict subst_2: Substitution set.
@@ -28,8 +23,7 @@ def cmp_subst(subst_1, subst_2):
 
 
 def reverse_translation_table(table_id=1):
-    """
-    Calculate a reverse translation table.
+    """Calculate a reverse translation table.
 
     :arg int table_id: Translation table id.
 
@@ -47,20 +41,16 @@ def reverse_translation_table(table_id=1):
 
 
 class BackTranslate(object):
-    """
-    Back translation.
-    """
+    """Back translation."""
     def __init__(self, table_id=1):
-        """
-        Initialise the class.
+        """Initialise the class.
 
         :arg int table_id: Translation table id.
         """
         self._back_table = reverse_translation_table(table_id)
 
     def _one_subst(self, substitutions, reference_codon, amino_acid):
-        """
-        Find single nucleotide substitutions that given a reference codon
+        """Find single nucleotide substitutions that given a reference codon
         explains an observed amino acid.
 
         :arg defaultdict(set) substitutions: Set of single nucleotide
@@ -76,8 +66,7 @@ class BackTranslate(object):
                             (reference_codon[position], codon[position]))
 
     def with_dna(self, reference_codon, amino_acid):
-        """
-        Find single nucleotide substitutions that given a reference codon
+        """Find single nucleotide substitutions that given a reference codon
         explains an observed amino acid.
 
         :arg str reference_codon: Original codon.
@@ -93,9 +82,8 @@ class BackTranslate(object):
         return dict(substitutions)
 
     def without_dna(self, reference_amino_acid, amino_acid):
-        """
-        Find single nucleotide substitutions that given a reference amino acid
-        explains an observed amino acid.
+        """Find single nucleotide substitutions that given a reference amino
+        acid explains an observed amino acid.
 
         :arg str reference_amino_acid: Original amino acid.
         :arg str amino_acid: Observed amino acid.
@@ -111,9 +99,8 @@ class BackTranslate(object):
         return dict(substitutions)
 
     def improvable(self):
-        """
-        Calculate all pairs of amino acid substututions that can be improved by
-        looking at the underlying codon.
+        """Calculate all pairs of amino acid substututions that can be improved
+        by looking at the underlying codon.
 
         :returns list: List of improvable substitutions.
         """

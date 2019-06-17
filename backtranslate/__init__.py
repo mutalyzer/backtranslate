@@ -1,35 +1,29 @@
-"""
-backtranslate: Functions for reverse translation.
+from os.path import dirname, abspath
+
+from configparser import ConfigParser
+
+from .backtranslate import BackTranslate
 
 
-Copyright (c) 2015 Leiden University Medical Center <humgen@lumc.nl>
-Copyright (c) 2015 Jeroen F.J. Laros <j.f.j.laros@lumc.nl>
+config = ConfigParser()
+with open('{}/setup.cfg'.format(dirname(abspath(__file__)))) as handle:
+    config.read_file(handle)
 
-Licensed under the MIT license, see the LICENSE file.
-"""
+_copyright_notice = 'Copyright (c) {} {} <{}>'.format(
+    config.get('metadata', 'copyright'),
+    config.get('metadata', 'author'),
+    config.get('metadata', 'author_email'))
 
-
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-from future.builtins import str, zip
-
-
-__version_info__ = ('0', '0', '5')
-
-
-__version__ = '.'.join(__version_info__)
-__author__ = 'LUMC, Jeroen F.J. Laros'
-__contact__ = 'J.F.J.Laros@lumc.nl'
-__homepage__ = 'https://github.com/mutalyzer/backtranslate'
-
-
-usage = __doc__.split("\n\n\n")
+usage = [config.get('metadata', 'description'), _copyright_notice]
 
 
 def doc_split(func):
-    return func.__doc__.split("\n\n")[0]
+    return func.__doc__.split('\n\n')[0]
 
 
 def version(name):
-    return "%s version %s\n\nAuthor   : %s <%s>\nHomepage : %s" % (name,
-        __version__, __author__, __contact__, __homepage__)
+    return '{} version {}\n\n{}\nHomepage: {}'.format(
+        config.get('metadata', 'name'),
+        config.get('metadata', 'version'),
+        _copyright_notice,
+        config.get('metadata', 'url'))

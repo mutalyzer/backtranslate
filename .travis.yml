@@ -1,13 +1,6 @@
-# Validate this file using http://lint.travis-ci.org/
 language: python
-sudo: false
 python:
-  - "2.7"
-  - "3.3"
-  - "3.4"
-  - "3.5"
-  - "nightly"
-  - "pypy"
-  - "pypy3"
-install: python setup.py install
-script: py.test
+  - 3.5
+  - 3.6
+install: pip install . fake-open tox-travis
+script: tox
