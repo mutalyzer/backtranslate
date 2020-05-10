@@ -11,7 +11,7 @@ def _three_to_one():
 
 
 def subst_to_cds(substitutions, offset):
-    """ Convert a set of substitutions to CDS coordinates.
+    """Convert a set of substitutions to CDS coordinates.
 
     :arg dict substitutions: Set of single nucleotide substitutions indexed by
         position.

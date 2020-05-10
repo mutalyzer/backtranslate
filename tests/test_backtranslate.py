@@ -1,17 +1,9 @@
-"""
-Tests for the backtranslate.backtranslate module.
-"""
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-from future.builtins import str, zip
-
+"""Tests for the backtranslate.backtranslate module."""
 from backtranslate.backtranslate import BackTranslate, cmp_subst
 
 
 class TestParser(object):
-    """
-    Test the backtranslate.backtranslate module.
-    """
+    """Test the backtranslate.backtranslate module."""
     def setup(self):
         self.bt = BackTranslate()
 
