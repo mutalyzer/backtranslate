@@ -1,10 +1,4 @@
-"""
-Tests for the backtranslate CLI.
-"""
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-from future.builtins import str, zip
-
+"""Tests for the backtranslate CLI."""
 import sys
 
 from hashlib import md5
@@ -16,9 +10,7 @@ from backtranslate import cli
 
 
 class TestParser(object):
-    """
-    Test the backtranslate.backtranslate module.
-    """
+    """Test the backtranslate.backtranslate module."""
     def setup(self):
         self._input = open('data/mhv.fa')
         self._output = StringIO()
