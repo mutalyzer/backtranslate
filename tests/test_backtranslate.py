@@ -1,5 +1,5 @@
-"""Tests for the backtranslate.backtranslate module."""
-from backtranslate.backtranslate import BackTranslate, cmp_subst
+"""Tests for the backtranslate module."""
+from mutalyzer_backtranslate.backtranslate import BackTranslate, cmp_subst
 
 
 class TestParser(object):

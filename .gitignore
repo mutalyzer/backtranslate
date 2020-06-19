@@ -1,7 +1,9 @@
-*.egg-info
 *.pyc
 .cache/
 .tox/
 build/
 dist/
+docs/Makefile
+docs/_build/
 examples/.ipynb_checkpoints/
+mutalyzer_backtranslate.egg-info
