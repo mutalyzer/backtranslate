@@ -5,7 +5,7 @@ The software is distributed via PyPI_, it can be installed with ``pip``:
 
 ::
 
-    pip install backtranslate
+    pip install mutalyzer-backtranslate
 
 
 From source
@@ -21,5 +21,5 @@ the following commands.
     pip install .
 
 
-.. _PyPI: https://pypi.org/project/backtranslate/
+.. _PyPI: https://pypi.org/project/mutalyzer-backtranslate/
 .. _GitHub: https://github.com/mutalyzer/backtranslate

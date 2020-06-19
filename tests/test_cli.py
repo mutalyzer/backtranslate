@@ -6,7 +6,7 @@ from io import StringIO
 
 from fake_open import md5_check
 
-from backtranslate import cli
+from mutalyzer_backtranslate import cli
 
 
 class TestParser(object):

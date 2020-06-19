@@ -43,8 +43,7 @@ def reverse_translation_table(table_id=1):
 class BackTranslate(object):
     """Back translation."""
     def __init__(self, table_id=1):
-        """Initialise the class.
-
+        """
         :arg int table_id: Translation table id.
         """
         self._back_table = reverse_translation_table(table_id)

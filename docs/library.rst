@@ -6,7 +6,7 @@ nucleotides.
 
 .. code:: python
 
-    >>> from backtranslate import BackTranslate
+    >>> from mutalyzer_backtranslate import BackTranslate
     >>>
     >>> # Create a class instance, optionally giving the translation table id.
     >>> bt = BackTranslate()
@@ -41,7 +41,7 @@ To get substitutions in a readable format, we can use the following:
 
 .. code:: python
 
-    >>> from backtranslate.util import subst_to_cds
+    >>> from mutalyzer_backtranslate.util import subst_to_cds
     >>>
     >>> substitutions = bt.without_dna('W', '*')
     >>>
