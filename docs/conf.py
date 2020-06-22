@@ -1,8 +1,6 @@
-import os
-import subprocess
-import sys
+from subprocess import call
 
-subprocess.call('pip install ..', shell=True)
+call('pip install ..', shell=True)
 
 from mutalyzer_backtranslate import _get_metadata
 

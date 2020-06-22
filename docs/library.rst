@@ -1,8 +1,8 @@
 Library
 =======
 
-The library provides functions for back translation from amino acids to
-nucleotides.
+This library provides functions for back translation from amino acid changes to
+nucleotide changes.
 
 .. code:: python
 
