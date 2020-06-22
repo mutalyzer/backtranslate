@@ -53,6 +53,7 @@ An amino acid change from a Leucine to a Phenylalanine can be explained by five
 substitutions.
 
 .. code:: python
+
     >>> bt.without_dna('L', 'F')
     {2: {('A', 'T'), ('A', 'C'), ('G', 'C'), ('G', 'T')}, 0: {('C', 'T')}}
 
