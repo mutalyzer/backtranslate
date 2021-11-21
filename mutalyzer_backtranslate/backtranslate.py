@@ -113,8 +113,9 @@ class BackTranslate(object):
                     substitutions_with_dna = self.with_dna(
                         codon, sample_amino_acid)
                     if (substitutions_with_dna and not
-                            cmp_subst(substitutions_without_dna,
-                            substitutions_with_dna) and
+                            cmp_subst(
+                                substitutions_without_dna,
+                                substitutions_with_dna) and
                             reference_amino_acid != sample_amino_acid):
                         substitutions.add(
                             (reference_amino_acid, sample_amino_acid))

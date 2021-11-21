@@ -1,7 +1,3 @@
-from subprocess import call
-
-call('pip install ..', shell=True)
-
 from mutalyzer_backtranslate import _get_metadata
 
 
@@ -11,5 +7,5 @@ project = _get_metadata('Name')
 release = _get_metadata('Version')
 
 autoclass_content = 'both'
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc', 'sphinx_autodoc_typehints', 'sphinxarg.ext']
 master_doc = 'index'

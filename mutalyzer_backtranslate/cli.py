@@ -78,8 +78,9 @@ def find_stops(input_handle, output_handle, offset, compact):
                 output_handle.write('{}\t{}\t{}\n'.format(
                     offset + (index * 3) + position,
                     list(stop_positions[position])[0][0],
-                    ','.join(map(lambda x: x[1],
-                    sorted(stop_positions[position])))))
+                    ','.join(map(
+                        lambda x: x[1],
+                        sorted(stop_positions[position])))))
 
 
 def main():
@@ -137,7 +138,7 @@ def main():
 
     try:
         args.func(
-            **dict((k, v) for k, v in vars(args).items() if k not in
-            ('func', 'subcommand')))
+            **dict((k, v) for k, v in vars(args).items() if k not in (
+                'func', 'subcommand')))
     except IOError as error:
         parser.error(error)
