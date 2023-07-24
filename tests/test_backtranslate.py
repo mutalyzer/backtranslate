@@ -4,7 +4,7 @@ from mutalyzer_backtranslate.backtranslate import BackTranslate, cmp_subst
 
 class TestParser(object):
     """Test the backtranslate.backtranslate module."""
-    def setup(self):
+    def setup_method(self):
         self.bt = BackTranslate()
 
     def test_with_dna_1(self):

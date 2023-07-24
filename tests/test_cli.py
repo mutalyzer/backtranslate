@@ -11,7 +11,7 @@ from mutalyzer_backtranslate import cli
 
 class TestParser(object):
     """Test the backtranslate.backtranslate module."""
-    def setup(self):
+    def setup_method(self):
         self._input = open('data/mhv.fa')
         self._output = StringIO()
 
