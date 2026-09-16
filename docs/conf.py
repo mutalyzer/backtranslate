@@ -1,10 +1,10 @@
-from mutalyzer_backtranslate import _get_metadata
+from mutalyzer_backtranslate import _authors, _project, _version, _info
 
 
-author = _get_metadata('Author')
-copyright = _get_metadata('Author')
-project = _get_metadata('Name')
-release = _get_metadata('Version')
+author = _authors
+project = _project
+release = _version
+info = _info
 
 autoclass_content = 'both'
 extensions = ['sphinx.ext.autodoc', 'sphinx_autodoc_typehints', 'sphinxarg.ext']
