@@ -3,7 +3,7 @@ from re import findall
 
 from Bio import SeqIO
 
-from . import _description,_version, _info, doc_split
+from . import _description,_version, _info, _copyright, doc_split
 from .backtranslate import BackTranslate
 from .util import protein_letters_3to1, subst_to_cds
 
@@ -110,7 +110,7 @@ def main():
         'amino_acid', type=str, help='amino acid, e.g., Tyr')
 
     parser = ArgumentParser(
-        description=_description, epilog=_info,
+        description=_description, epilog=f'\n{_info}\n\n{_copyright}',
         formatter_class=RawDescriptionHelpFormatter)
     parser.add_argument('-v', action='version', version=_version)
     subparsers = parser.add_subparsers(dest='subcommand')

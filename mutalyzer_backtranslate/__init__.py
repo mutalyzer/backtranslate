@@ -30,4 +30,5 @@ _author = _extract('Author-email', r'"', 1)
 _email = _extract('Author-email', r'<|>', 1)
 _description = _extract('Summary')
 _url = _extract('Project-URL', r', ', 1)
-_info = f'{_project} version {_version}\n\nHomepage: {_url}'
+_info = f'Homepage: {_url}'
+_copyright = f'Copyright © {_author} {_email}'
