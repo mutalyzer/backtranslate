@@ -3,7 +3,7 @@ from re import findall
 
 from Bio import SeqIO
 
-from . import _description,_version, _info, _copyright, doc_split
+from . import _description, _version, _info, _copyright, doc_split
 from .backtranslate import BackTranslate
 from .util import protein_letters_3to1, subst_to_cds
 
