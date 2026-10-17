@@ -33,8 +33,7 @@ dependencies = [
 test = [
     "fake-open>=0.0.1",
     "pytest-cov>=2.10.0",
-    "pytest-pep8>=1.0.6",
-    "pytest>=4.0.1",
+    "pytest>=8",
 ]
 
 [project.scripts]
