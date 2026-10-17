@@ -2,11 +2,14 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :hidden:
 
    introduction
    install
    usage
+   cli
+
    library
    api
+
    credits

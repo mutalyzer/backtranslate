@@ -3,7 +3,7 @@ from re import findall
 
 from Bio import SeqIO
 
-from . import _description, _version, _info, _copyright, doc_split
+from . import description, doc_split, info
 from .backtranslate import BackTranslate
 from .util import protein_letters_3to1, subst_to_cds
 
@@ -84,8 +84,7 @@ def find_stops(input_handle, output_handle, offset, compact):
                         sorted(stop_positions[position])))))
 
 
-def main():
-    """Main entry point."""
+def _arg_parser():
     input_parser = ArgumentParser(add_help=False)
     input_parser.add_argument(
         'input_handle', metavar='INPUT', type=FileType('r'),
@@ -110,9 +109,9 @@ def main():
         'amino_acid', type=str, help='amino acid, e.g., Tyr')
 
     parser = ArgumentParser(
-        description=_description, epilog=f'\n{_info}\n\n{_copyright}',
+        description=description, epilog=info,
         formatter_class=RawDescriptionHelpFormatter)
-    parser.add_argument('-v', action='version', version=_version)
+    parser.add_argument('-v', action='version', version=info)
     subparsers = parser.add_subparsers(dest='subcommand')
     subparsers.required = True
 
@@ -135,11 +134,20 @@ def main():
         help='compact output')
     subparser.set_defaults(func=find_stops)
 
-    args = parser.parse_args()
+    return parser
+
+
+def main() -> None:
+    parser = _arg_parser()
 
     try:
-        args.func(
-            **dict((k, v) for k, v in vars(args).items() if k not in (
-                'func', 'subcommand')))
+        args = parser.parse_args()
+    except IOError as error:
+        parser.error(error)
+
+    try:
+        args.func(**{
+            k: v for k, v in vars(args).items()
+            if k not in ('func', 'subcommand')})
     except IOError as error:
         parser.error(error)
