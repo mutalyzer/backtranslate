@@ -1,29 +1,32 @@
-from pkg_resources import get_distribution
+from importlib.metadata import PackageNotFoundError, metadata
+from re import split
+from typing import Callable
 
 from .backtranslate import BackTranslate
 
 
-def _get_metadata(name):
-    pkg = get_distribution('mutalyzer_backtranslate')
-
-    for line in pkg.get_metadata_lines(pkg.PKG_INFO):
-        if line.startswith('{}: '.format(name)):
-            return line.split(': ')[1]
-
-    return ''
+def _extract(key: str, delim: str = r'[^\s\S]', index: int = 0) -> str:
+    try:
+        value = metadata(__package__).get(key, '')
+    except PackageNotFoundError:
+        return '<NO DATA>'
+    return split(delim, value)[index]
 
 
-_copyright_notice = 'Copyright (c) {} <{}>'.format(
-    _get_metadata('Author'), _get_metadata('Author-email'))
-
-usage = [_get_metadata('Summary'), _copyright_notice]
-
-
-def doc_split(func):
+def doc_split(func: Callable) -> str:
     return func.__doc__.split('\n\n')[0]
 
 
-def version(name):
-    return '{} version {}\n\n{}\nHomepage: {}'.format(
-        _get_metadata('Name'), _get_metadata('Version'), _copyright_notice,
-        _get_metadata('Home-page'))
+_email = _extract('Author-email', r'<|>', 1)
+_url = _extract('Project-URL', r', ', 1)
+_year = '2015-2026'
+
+project = _extract('Name')
+release = _extract('Version')
+author = _extract('Author-email', r'"', 1)
+description = _extract('Summary')
+copyright = f'{_year} by {author} <{_email}>'
+info = f'''{project} version {release}
+
+Copyright (c) {copyright}
+Homepage: {_url}'''

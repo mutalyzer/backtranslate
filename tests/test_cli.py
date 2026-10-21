@@ -1,7 +1,4 @@
 """Tests for the backtranslate CLI."""
-import sys
-
-from hashlib import md5
 from io import StringIO
 
 from fake_open import md5_check

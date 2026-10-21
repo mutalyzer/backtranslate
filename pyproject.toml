@@ -1,0 +1,54 @@
+[build-system]
+requires = ['setuptools>=61']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'mutalyzer_backtranslate'
+description = 'Functions for reverse translation.'
+version = '1.0.0'
+
+authors = [
+    {name = 'LUMC, Jeroen F.J. Laros', email = 'J.F.J.Laros@lumc.nl'}]
+readme = 'README.rst'
+urls = {Homepage = 'https://github.com/mutalyzer/backtranslate'}
+keywords = ['bioinformatics']
+license = 'MIT'
+classifiers = [
+    'Intended Audience :: Developers',
+    'Intended Audience :: Science/Research',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Topic :: Scientific/Engineering']
+
+requires-python = '>=3.10'
+dependencies = [
+    'biopython>=1.76',
+    'python-Levenshtein>=0.12.0']
+
+[tool.setuptools.packages.find]
+include = ["mutalyzer_backtranslate*"]
+
+[project.scripts]
+backtranslate = 'mutalyzer_backtranslate.cli:main'
+
+[project.optional-dependencies]
+dev = [
+    'build>=1.6.1',
+    'fake-open>=0.0.1',
+    'flake8>=7.4.1',
+    'pytest-cov>=2.10.0',
+    'pytest>=4.0.1',
+    'twine>=7.0.0']
+docs = [
+    'sphinx-autodoc-argparse>=0.0.1a26',
+    'sphinx-autodoc-sphinx>=0.0.1a26',
+    'sphinx-autodoc-typehints>=3.10.3',
+    'sphinx_rtd_theme>=3.1.0',
+    'typing_extensions>=4.15.0']
+
+[tool.coverage.report]
+exclude_lines = ['def main()']
+
+[tool.coverage.run]
+source = ['mutalyzer_backtranslate']
