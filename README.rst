@@ -3,8 +3,8 @@ Back translation
 
 .. image:: https://img.shields.io/github/last-commit/mutalyzer/backtranslate.svg
    :target: https://github.com/mutalyzer/backtranslate/graphs/commit-activity
-.. image:: https://github.com/mutalyzer/backtranslate/actions/workflows/python-package.yml/badge.svg
-   :target: https://github.com/mutalyzer/backtranslate/actions/workflows/python-package.yml
+.. image:: https://github.com/mutalyzer/backtranslate/actions/workflows/test.yml/badge.svg
+   :target: https://github.com/mutalyzer/backtranslate/actions/workflows/test.yml
 .. image:: https://readthedocs.org/projects/mutalyzer-backtranslate/badge/?version=latest
    :target: https://mutalyzer-backtranslate.readthedocs.io/en/latest
 .. image:: https://img.shields.io/github/release-date/mutalyzer/backtranslate.svg
